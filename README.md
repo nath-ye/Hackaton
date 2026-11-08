@@ -34,4 +34,26 @@ Cómo ejecutarlo
 
 > Nota sobre `uploads/`: esta carpeta no se incluye en el repositorio porque almacena archivos subidos por los usuarios. Debe crearse manualmente al instalar el proyecto.
 
-## 📁 Estructura del proyecto
+Estructura del proyecto
+newton-go/
+- conexion.php # Registro e inicio de sesión
+- img.php # Subida de imagen de perfil
+- newton go.php # Dashboard principal
+- inicio_sesion.html # Pantalla de login/registro
+- cuestionario cinematica.html
+- cuestionarioDinamica.html
+- cuestionarioEnergia.html
+- cuestionarioOndas.html
+- cuestionarioElectricidad.html
+- cuestionarioTermodinamica.html
+- cuestionarioOptica.html
+- estructura.sql # Estructura de la base de datos (reconstruida)
+- uploads/ # (crear manualmente) imágenes subidas por usuarios
+- README.md
+
+Mejoras pendientes (roadmap)
+- Migrar las consultas a prepared statements para prevenir inyección SQL.
+- Mover las credenciales de la base de datos a variables de entorno.
+- Renombrar archivos con espacios (`newton go.php` → `dashboard.php`).
+- Validar el tipo y tamaño de archivo en la subida de imágenes.
+- Añadir la opción de recuperar contraseña.
