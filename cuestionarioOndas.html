@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Newton-Go | Quiz Ondas</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #0f172a;
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #020617;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .formulas-bar {
+            background: #1e293b;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #38bdf8;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .formula-item {
+            background: #0f172a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-container {
+            flex: 2;
+            max-width: 800px;
+            min-width: 300px;
+        }
+
+        .stats-panel {
+            flex: 1;
+            max-width: 320px;
+            min-width: 280px;
+            background: #020617;
+            padding: 20px;
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+            border: 1px solid #1e293b;
+        }
+
+        .glosario {
+            margin-top: 25px;
+            font-size: 0.85em;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .glosario h4 {
+            margin: 0 0 10px 0;
+            color: #38bdf8;
+            text-transform: uppercase;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 5px;
+        }
+
+        .glosario-item {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .glosario-item b {
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .pregunta-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #334155;
+            transition: 0.3s;
+        }
+
+        .pregunta-card.correcta {
+            border-left-color: #22c55e;
+            opacity: 0.8;
+        }
+
+        .pregunta-card.incorrecta {
+            border-left-color: #ef4444;
+            opacity: 0.8;
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #334155;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover:not(:disabled) {
+            background: #38bdf8;
+            color: black;
+        }
+
+        .correct {
+            background: #22c55e !important;
+        }
+
+        .incorrect {
+            background: #ef4444 !important;
+        }
+
+        .barra-bg {
+            background: #334155;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .barra-fill {
+            background: #22c55e;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>Desafío: Ondas y Sonido</header>
+
+<div class="formulas-bar">
+    <div class="formula-item"><b>Velocidad:</b> v = λ · f</div>
+    <div class="formula-item"><b>Periodo:</b> T = 1 / f</div>
+    <div class="formula-item"><b>Frecuencia:</b> f = 1 / T</div>
+    <div class="formula-item"><b>λ:</b> Longitud de onda</div>
+</div>
+
+<div class="container">
+
+    <div class="quiz-container" id="quiz"></div>
+
+    <div class="stats-panel">
+        <h3>Progreso Ondas</h3>
+
+        <p>Aciertos: <span id="puntos-val">0</span> / 20</p>
+
+        <div class="progress-box">
+            <span>Efectividad: <b id="porcentaje-val">0%</b></span>
+            <div class="barra-bg">
+                <div id="barra-progreso" class="barra-fill"></div>
+            </div>
+        </div>
+
+     <div class="glosario">
+    <h4>Formulario</h4>
+
+    <ul>
+        <li><b>v = λ · f:</b> La velocidad depende de la longitud de onda y la frecuencia.</li>
+        <li><b>T = 1 / f:</b> El periodo es el tiempo de un ciclo; es inverso a la frecuencia.</li>
+        <li><b>f = 1 / T:</b> La frecuencia son los ciclos por segundo.</li>
+        <li><b>λ:</b> Distancia entre dos crestas o puntos iguales.</li>
+        <li><b>Hz:</b> Unidad de frecuencia (ciclos por segundo).</li>
+    </ul>
+</div>
+
+        <hr style="border:0; border-top:1px solid #334155; margin:20px 0;">
+
+        <button onclick="reiniciarProgreso()" style="width:100%; background:#ef4444;">
+            Reiniciar Quiz
+        </button>
+    </div>
+
+</div>
+
+<script>
+const problemasOriginales = [
+    { p: "¿Qué transporta una onda?", ops: ["Materia", "Energía", "Masa"], r: "Energía" },
+    { p: "Si f = 10 Hz, ¿cuál es el periodo T?", ops: ["0.1 s", "10 s", "1 s"], r: "0.1 s" },
+    { p: "Onda donde la vibración es perpendicular a la propagación.", ops: ["Longitudinal", "Transversal", "Estacionaria"], r: "Transversal" },
+    { p: "El sonido es una onda de tipo...", ops: ["Electromagnética", "Mecánica Longitudinal", "Mecánica Transversal"], r: "Mecánica Longitudinal" },
+    { p: "¿Cuál es la unidad de frecuencia?", ops: ["Joule", "Hertz", "Newton"], r: "Hertz" },
+    { p: "Distancia entre dos crestas consecutivas.", ops: ["Amplitud", "Periodo", "Longitud de onda"], r: "Longitud de onda" },
+    { p: "Si v = 20 m/s y f = 5 Hz, ¿cuánto vale λ?", ops: ["100 m", "4 m", "0.25 m"], r: "4 m" },
+    { p: "Ondas que no necesitan un medio para viajar.", ops: ["Mecánicas", "Electromagnéticas", "Sonoras"], r: "Electromagnéticas" },
+    { p: "La altura o tono de un sonido depende de su...", ops: ["Frecuencia", "Amplitud", "Velocidad"], r: "Frecuencia" },
+    { p: "El volumen de un sonido depende de su...", ops: ["Frecuencia", "Amplitud", "Longitud"], r: "Amplitud" },
+    { p: "Parte más baja de una onda.", ops: ["Cresta", "Nodo", "Valle"], r: "Valle" },
+    { p: "Si el periodo T es 2s, ¿cuál es la frecuencia?", ops: ["0.5 Hz", "2 Hz", "1 Hz"], r: "0.5 Hz" },
+    { p: "Velocidad del sonido en el vacío.", ops: ["340 m/s", "300,000 km/s", "0 m/s"], r: "0 m/s" },
+    { p: "Fenómeno donde la onda rebota al chocar con un obstáculo.", ops: ["Refracción", "Reflexión", "Difracción"], r: "Reflexión" },
+    { p: "Fenómeno donde la onda cambia de dirección al cambiar de medio.", ops: ["Refracción", "Reflexión", "Interferencia"], r: "Refracción" },
+    { p: "Ondas de radio son un ejemplo de ondas...", ops: ["Mecánicas", "Electromagnéticas", "Longitudinales"], r: "Electromagnéticas" },
+    { p: "Número de ciclos por segundo.", ops: ["Longitud", "Frecuencia", "Amplitud"], r: "Frecuencia" },
+    { p: "En una cuerda de guitarra, la onda es...", ops: ["Longitudinal", "Transversal", "Electromagnética"], r: "Transversal" },
+    { p: "Si λ = 2m y f = 50 Hz, ¿cuál es la velocidad v?", ops: ["25 m/s", "100 m/s", "0.04 m/s"], r: "100 m/s" },
+    { p: "¿Cómo se llama el cambio de frecuencia por el movimiento de la fuente?", ops: ["Efecto Doppler", "Efecto Joule", "Efecto Fotoeléctrico"], r: "Efecto Doppler" }
+];
+
+let userData = {
+    respuestasCorrectas: 0,
+    preguntasRespondidasIds: [],
+    preguntasCorrectasIds: []
+};
+
+function mezclarOpciones(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function cargarSesion() {
+    const backup = localStorage.getItem("progreso_ondas_v1");
+    if (backup) userData = JSON.parse(backup);
+
+    actualizarUI();
+    renderizarPreguntas();
+}
+
+function renderizarPreguntas() {
+    const cont = document.getElementById("quiz");
+    cont.innerHTML = "";
+
+    problemasOriginales.forEach((prob, i) => {
+        const resp = userData.preguntasRespondidasIds.includes(i);
+        const esC = userData.preguntasCorrectasIds.includes(i);
+
+        const card = document.createElement("div");
+        card.className = `pregunta-card ${resp ? (esC ? 'correcta' : 'incorrecta') : ''}`;
+
+        const opsM = resp ? prob.ops : mezclarOpciones([...prob.ops]);
+
+        card.innerHTML = `
+            <p><b>${i + 1}.</b> ${prob.p}</p>
+            <div class="opciones">
+                ${opsM.map(o => `
+                    <button 
+                        onclick="verificar(${i}, '${o}', this)" 
+                        ${resp ? 'disabled' : ''}
+                        class="${resp && o === prob.r && esC ? 'correct' : ''}">
+                        ${o}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+
+        cont.appendChild(card);
+    });
+}
+
+function verificar(id, opt, btn) {
+    const esC = opt === problemasOriginales[id].r;
+
+    btn.parentElement.querySelectorAll("button")
+        .forEach(b => b.disabled = true);
+
+    if (esC) {
+        btn.classList.add("correct");
+        userData.respuestasCorrectas++;
+        userData.preguntasCorrectasIds.push(id);
+        btn.closest('.pregunta-card').classList.add('correcta');
+    } else {
+        btn.classList.add("incorrect");
+        btn.closest('.pregunta-card').classList.add('incorrecta');
+    }
+
+    userData.preguntasRespondidasIds.push(id);
+    guardarYActualizar();
+}
+
+function guardarYActualizar() {
+    localStorage.setItem("progreso_ondas_v1", JSON.stringify(userData));
+
+    const porc = Math.round(
+        (userData.respuestasCorrectas / problemasOriginales.length) * 100
+    );
+
+    let progG = JSON.parse(localStorage.getItem("user_progreso")) || {
+        cinematica: 0,
+        dinamica: 0,
+        energia: 0,
+        ondas: 0,
+        electricidad: 0,
+        termo: 0,
+        optica: 0
+    };
+
+    progG.ondas = porc;
+
+    localStorage.setItem("user_progreso", JSON.stringify(progG));
+
+    actualizarUI();
+}
+
+function actualizarUI() {
+    document.getElementById("puntos-val").innerText = userData.respuestasCorrectas;
+
+    const porc = Math.round((userData.respuestasCorrectas / 20) * 100);
+
+    document.getElementById("porcentaje-val").innerText = porc + "%";
+    document.getElementById("barra-progreso").style.width = porc + "%";
+}
+
+function reiniciarProgreso() {
+    if (confirm("¿Reiniciar quiz de ondas?")) {
+        localStorage.removeItem("progreso_ondas_v1");
+
+        let progG = JSON.parse(localStorage.getItem("user_progreso"));
+
+        if (progG) {
+            progG.ondas = 0;
+            localStorage.setItem("user_progreso", JSON.stringify(progG));
+        }
+
+        location.reload();
+    }
+}
+
+window.onload = cargarSesion;
+</script>
+
+</body>
+</html>

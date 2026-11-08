@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Newton-Go | Quiz Dinámica</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #0f172a;
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #020617;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .formulas-bar {
+            background: #1e293b;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #38bdf8;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .formula-item {
+            background: #0f172a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-container {
+            flex: 2;
+            max-width: 800px;
+            min-width: 300px;
+        }
+
+        .stats-panel {
+            flex: 1;
+            max-width: 320px;
+            min-width: 280px;
+            background: #020617;
+            padding: 20px;
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+            border: 1px solid #1e293b;
+        }
+
+        .glosario {
+            margin-top: 25px;
+            font-size: 0.85em;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .glosario h4 {
+            margin: 0 0 10px 0;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 5px;
+        }
+
+        .glosario-item {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .glosario-item b {
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .pregunta-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #334155;
+            transition: 0.3s;
+        }
+
+        .pregunta-card.correcta {
+            border-left-color: #22c55e;
+            opacity: 0.8;
+        }
+
+        .pregunta-card.incorrecta {
+            border-left-color: #ef4444;
+            opacity: 0.8;
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #334155;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover:not(:disabled) {
+            background: #38bdf8;
+            color: black;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+        }
+
+        .correct {
+            background: #22c55e !important;
+            color: white;
+        }
+
+        .incorrect {
+            background: #ef4444 !important;
+            color: white;
+        }
+
+        .barra-bg {
+            background: #334155;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .barra-fill {
+            background: #22c55e;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>Desafíos-Dinámica</header>
+
+<div class="formulas-bar">
+    <div class="formula-item"><b>Fuerza:</b> F = m · a</div>
+    <div class="formula-item"><b>Peso:</b> P = m · g</div>
+    <div class="formula-item"><b>Masa:</b> m = F / a</div>
+    <div class="formula-item"><b>Aceleración:</b> a = F / m</div>
+</div>
+
+<div class="container">
+    <div class="quiz-container" id="quiz"></div>
+
+    <div class="stats-panel">
+        <h3>Tu Progreso</h3>
+        <p>Aciertos: <span id="puntos-val">0</span> / 20</p>
+
+        <div class="progress-box">
+            <span>Efectividad: <b id="porcentaje-val">0%</b></span>
+            <div class="barra-bg">
+                <div id="barra-progreso" class="barra-fill"></div>
+            </div>
+        </div>
+
+        <div class="glosario">
+            <h4>Formulario</h4>
+
+            <div class="glosario-item">
+                <b>F = m · a</b><br>
+                Segunda Ley de Newton: La fuerza es igual al producto de la masa por la aceleración.
+            </div>
+
+            <div class="glosario-item">
+                 <b>Peso: M * G</b><br>
+             peso equivale a masa multiplicada por gravedad  
+            </div>
+
+            <div class="glosario-item">
+                <b>masa: F / A </b><br>
+                la masa es equivalente a dividir fuerza entre aceleracion
+                </div>
+
+            <div class="glosario-item">
+                <b>aceleracion: F / m</b><br>
+             la aceleracion aqui se mide dividiendo la fuerza sobre la masa
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
+
+        <button onclick="reiniciarProgreso()" style="width: 100%; background: #ef4444; color: white;">
+            Reiniciar Todo
+        </button>
+    </div>
+</div>
+
+<script>
+const problemasOriginales = [
+    { p: "¿Cuál es la fuerza necesaria para acelerar un bloque de 5kg a 2 m/s²?", ops: ["10 N", "7 N", "2.5 N"], r: "10 N" },
+    { p: "Si se aplica una fuerza de 20N a un objeto y este acelera a 4 m/s², ¿cuál es su masa?", ops: ["80 kg", "5 kg", "0.2 kg"], r: "5 kg" },
+    { p: "Un objeto de 10kg está en reposo. ¿Qué fuerza resultante actúa sobre él?", ops: ["98 N", "10 N", "0 N"], r: "0 N" },
+    { p: "¿Cuál es el peso en la Tierra de un objeto cuya masa es de 10kg? (g=9.8 m/s²)", ops: ["10 N", "98 N", "1 N"], r: "98 N" },
+    { p: "La tendencia de un objeto a mantener su estado de reposo se llama...", ops: ["Fuerza", "Aceleración", "Inercia"], r: "Inercia" },
+    { p: "Si duplicas la fuerza aplicada a una masa constante, la aceleración...", ops: ["Se duplica", "Se reduce a la mitad", "No cambia"], r: "Se duplica" },
+    { p: "Un cuerpo de 2kg recibe una fuerza de 12N. ¿Cuál es su aceleración?", ops: ["24 m/s²", "6 m/s²", "10 m/s²"], r: "6 m/s²" },
+    { p: "¿Qué ley dice: 'A toda acción corresponde una reacción igual y opuesta'?", ops: ["1ra Ley", "2da Ley", "3ra Ley"], r: "3ra Ley" },
+    { p: "Si un astronauta tiene una masa de 70kg en la Tierra, ¿cuál es su masa en la Luna?", ops: ["70 kg", "11.6 kg", "0 kg"], r: "70 kg" },
+    { p: "¿Qué unidad equivale a 1 kg·m/s²?", ops: ["Joule", "Pascal", "Newton"], r: "Newton" },
+    { p: "Si la fuerza neta sobre un objeto es cero, el objeto está...", ops: ["En reposo o MRU", "Acelerando", "Frenando"], r: "En reposo o MRU" },
+    { p: "Fuerza que se opone al movimiento entre dos superficies en contacto:", ops: ["Inercia", "Fricción", "Tensión"], r: "Fricción" },
+    { p: "Un carro de 1000kg frena con una fuerza de 2000N. ¿Cuál es su aceleración?", ops: ["-2 m/s²", "0.5 m/s²", "-0.2 m/s²"], r: "-2 m/s²" },
+    { p: "Al empujar una pared, esta no se mueve porque...", ops: ["No hay fuerza", "La fuerza de reacción es igual", "La pared tiene masa infinita"], r: "La fuerza de reacción es igual" },
+    { p: "Si un objeto acelera a 10 m/s² con una fuerza de 50N, ¿cuál es su masa?", ops: ["500 kg", "5 kg", "0.2 kg"], r: "5 kg" },
+    { p: "¿Cuál es el peso de un objeto de 2kg en un lugar donde g=10 m/s²?", ops: ["20 N", "5 N", "0.2 N"], r: "20 N" },
+    { p: "Si la masa de un objeto aumenta al doble (fuerza constante), la aceleración...", ops: ["Se duplica", "Se reduce a la mitad", "Se cuadruplica"], r: "Se reduce a la mitad" },
+    { p: "Instrumento utilizado para medir fuerzas:", ops: ["Balanza", "Dinamómetro", "Termómetro"], r: "Dinamómetro" },
+    { p: "Fuerza ejercida por una cuerda estirada:", ops: ["Normal", "Peso", "Tensión"], r: "Tensión" },
+    { p: "La fuerza Normal siempre es ________ a la superficie de contacto.", ops: ["Paralela", "Perpendicular", "Opuesta"], r: "Perpendicular" }
+];
+
+let userData = {
+    respuestasCorrectas: 0,
+    preguntasRespondidasIds: [],
+    preguntasCorrectasIds: []
+};
+
+function mezclarOpciones(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function cargarSesion() {
+    const backup = localStorage.getItem("progreso_dinamica_v1");
+    if (backup) {
+        userData = JSON.parse(backup);
+    }
+    actualizarUI();
+    renderizarPreguntas();
+}
+
+function renderizarPreguntas() {
+    const contenedor = document.getElementById("quiz");
+    contenedor.innerHTML = "";
+
+    problemasOriginales.forEach((prob, index) => {
+        const respondida = userData.preguntasRespondidasIds.includes(index);
+        const esCorrecta = userData.preguntasCorrectasIds.includes(index);
+
+        const card = document.createElement("div");
+        card.className = `pregunta-card ${respondida ? (esCorrecta ? 'correcta' : 'incorrecta') : ''}`;
+
+        const opcionesMezcladas = respondida ? prob.ops : mezclarOpciones([...prob.ops]);
+
+        card.innerHTML = `
+            <p><b>${index + 1}.</b> ${prob.p}</p>
+            <div class="opciones">
+                ${opcionesMezcladas.map(opt => `
+                    <button onclick="verificar(${index}, '${opt}', this)" ${respondida ? 'disabled' : ''}
+                        class="${respondida && opt === prob.r && esCorrecta ? 'correct' : ''}">
+                        ${opt}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+
+        contenedor.appendChild(card);
+    });
+}
+
+function verificar(idPregunta, opcionSeleccionada, btn) {
+    const correcta = problemasOriginales[idPregunta].r;
+    const esCorrecto = opcionSeleccionada === correcta;
+
+    btn.parentElement.querySelectorAll("button").forEach(b => b.disabled = true);
+
+    if (esCorrecto) {
+        btn.classList.add("correct");
+        userData.respuestasCorrectas++;
+        userData.preguntasCorrectasIds.push(idPregunta);
+        btn.closest('.pregunta-card').classList.add('correcta');
+    } else {
+        btn.classList.add("incorrect");
+        btn.closest('.pregunta-card').classList.add('incorrecta');
+    }
+
+    userData.preguntasRespondidasIds.push(idPregunta);
+    guardarYActualizar();
+}
+
+function guardarYActualizar() {
+    localStorage.setItem("progreso_dinamica_v1", JSON.stringify(userData));
+    actualizarUI();
+}
+
+function actualizarUI() {
+    document.getElementById("puntos-val").innerText = userData.respuestasCorrectas;
+    const porc = Math.round((userData.respuestasCorrectas / 20) * 100);
+    document.getElementById("porcentaje-val").innerText = porc + "%";
+    document.getElementById("barra-progreso").style.width = porc + "%";
+}
+
+function reiniciarProgreso() {
+    if (confirm("¿Reiniciar el cuestionario de Dinámica?")) {
+        localStorage.removeItem("progreso_dinamica_v1");
+        location.reload();
+    }
+}
+
+window.onload = cargarSesion;
+</script>
+
+</body>
+</html>

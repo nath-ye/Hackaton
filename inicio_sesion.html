@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Newton-Go</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+margin:0;
+background:#0f172a;
+color:#e5e7eb;
+}
+
+header{
+background:#020617;
+padding:20px;
+text-align:center;
+font-size:28px;
+font-weight:bold;
+color:#38bdf8;
+}
+
+.container{
+display:flex;
+}
+
+.content{
+display: flex;
+justify-content: center;
+width: 550px;
+max-width: 1200px;
+margin: 0 auto; 
+padding: 20px;
+box-sizing: border-box;
+
+}
+
+.card{
+background:#1e293b;
+padding:25px;
+border-radius:12px;
+width: 100%; 
+max-width: none; 
+display: flex;
+flex-direction: column; 
+align-items: center;
+}
+
+.card a{
+color: #38bdf8;      
+text-decoration: underline;
+cursor: pointer;  
+font-style: italic;
+}
+
+.card a:hover {
+color: #ffffff;         
+}
+
+.card button{
+margin-top:10px;
+padding:10px;
+width:100%;
+border:none;
+border-radius:8px;
+background:#334155;
+color:white;
+cursor:pointer;
+}
+
+.card button:hover{
+background:#38bdf8;
+color:black;
+}
+
+.result{
+margin-top:15px;
+font-weight:bold;
+}
+
+form{
+width: 100%;
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+form input {
+      width: 95%;
+      padding: 12px;
+	  margin: 0 auto 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #334155;
+      color: #fff;
+      font-size: 16px;
+	  align-items: center;
+    }
+
+    form input::placeholder {
+      color: #aaa;
+    }
+
+.ha{
+    display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+</style>
+</head>
+<body>
+    <header>
+    Newton-Go ⚛️
+    </header>
+    <div class="content">
+        <div class="card" id="is">
+            <h3 class="ha">Iniciar sesión</h3>
+            <form method="post" action="conexion.php">
+                <input type="text" name="usuario" placeholder="Usuario" required><br>
+                <input type="password" name="contrasena" placeholder="Contraseña" required><br>
+                <button type="submit" name="iniciar">Entrar</button><br><br>
+            </form>
+            <a class="ha" onclick="mostrar('r')">No tienes cuenta? Regístrate</a>
+        </div>
+
+        <div class="card" id="r" style="display:none">
+            <h3 class="ha">Registrar</h3>
+            <form method="post" action="conexion.php">
+                <input type="text" name="usuario" placeholder="Usuario" required><br>
+                <input type="text" name="correo" placeholder="Correo electrónico" required><br>
+                <input type="password" name="contrasena" placeholder="Contraseña" required><br>
+                <button type="submit" name="registrar">Entrar</button><br><br>
+            </form>
+            <a class="ha" onclick="mostrar('is')">Ya tienes cuenta? Inica sesión</a>
+        </div>
+    </div>
+<script>
+function mostrar(seccion){
+
+document.querySelectorAll(".card").forEach(c=>{
+c.style.display="none";
+});
+
+document.getElementById(seccion).style.display="block";
+}
+</script>
+</body>
+</html>

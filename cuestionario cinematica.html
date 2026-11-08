@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Newton-Go | Quiz Cinemática</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #0f172a;
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #020617;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .formulas-bar {
+            background: #1e293b;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #38bdf8;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .formula-item {
+            background: #0f172a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-container {
+            flex: 2;
+            max-width: 800px;
+            min-width: 300px;
+        }
+
+        .stats-panel {
+            flex: 1;
+            max-width: 320px;
+            min-width: 280px;
+            background: #020617;
+            padding: 20px;
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+            border: 1px solid #1e293b;
+        }
+
+        .glosario {
+            margin-top: 25px;
+            font-size: 0.85em;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .glosario h4 {
+            margin: 0 0 10px 0;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 5px;
+        }
+
+        .glosario-item {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .glosario-item b {
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .pregunta-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #334155;
+            transition: 0.3s;
+        }
+
+        .pregunta-card.correcta {
+            border-left-color: #22c55e;
+            opacity: 0.8;
+        }
+
+        .pregunta-card.incorrecta {
+            border-left-color: #ef4444;
+            opacity: 0.8;
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #334155;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        button:hover:not(:disabled) {
+            background: #38bdf8;
+            color: black;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+        }
+
+        .correct {
+            background: #22c55e !important;
+            color: white;
+        }
+
+        .incorrect {
+            background: #ef4444 !important;
+            color: white;
+        }
+
+        .barra-bg {
+            background: #334155;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .barra-fill {
+            background: #22c55e;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>Desafío-Cinemática</header>
+
+<div class="formulas-bar">
+    <div class="formula-item"><b>MRU:</b> v = d / t</div>
+    <div class="formula-item"><b>Distancia:</b> d = v · t</div>
+    <div class="formula-item"><b>Aceleración:</b> a = (vf - vi) / t</div>
+    <div class="formula-item"><b>Tiempo:</b> t = d / v</div>
+</div>
+
+<div class="container">
+    <div class="quiz-container" id="quiz"></div>
+
+    <div class="stats-panel">
+        <h3>Tu Progreso</h3>
+        <p>Aciertos: <span id="puntos-val">0</span> / 20</p>
+
+        <div class="progress-box">
+            <span>Efectividad: <b id="porcentaje-val">0%</b></span>
+            <div class="barra-bg">
+                <div id="barra-progreso" class="barra-fill"></div>
+            </div>
+        </div>
+
+        <div class="glosario">
+            <h4>Glosario</h4>
+
+            <div class="glosario-item">
+                <b>v = d / t</b><br>
+                Velocidad: Distancia recorrida dividida entre el tiempo empleado.
+            </div>
+
+            <div class="glosario-item">
+                <b>d = v · t</b><br>
+                Distancia: Espacio total recorrido moviéndose a una velocidad constante.
+            </div>
+
+            <div class="glosario-item">
+                <b>a = (vf - vi) / t</b><br>
+                Aceleración: Cambio de velocidad (Final - Inicial) en un tiempo dado.
+            </div>
+
+            <div class="glosario-item">
+                <b>t = d / v</b><br>
+                Tiempo: Duración necesaria para completar una distancia a cierta velocidad.
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #334155; margin: 20px 0;">
+
+        <button onclick="reiniciarProgreso()" style="width: 100%; background: #ef4444; color: white;">
+            Reiniciar Todo
+        </button>
+    </div>
+</div>
+
+<script>
+const problemasOriginales = [
+    { p: "Un auto recorre 100m en 5s. ¿Cual es su velocidad?", ops: ["20 m/s", "500 m/s", "10 m/s"], r: "20 m/s" },
+    { p: "Si un objeto se mueve a 10 m/s durante 30s, ¿qué distancia recorre?", ops: ["3 m", "300 m", "30 m"], r: "300 m" },
+    { p: "En 5s, un móvil pasa de 0 a 20 m/s. ¿Cual es su aceleración?", ops: ["4 m/s²", "100 m/s²", "2 m/s²"], r: "4 m/s²" },
+    { p: "Un móvil frena de 30 m/s a 0 en 10s. ¿Cual es su aceleración?", ops: ["-3 m/s²", "3 m/s²", "-30 m/s²"], r: "-3 m/s²" },
+    { p: "Tiempo necesario para recorrer 1km a una velocidad constante de 20 m/s.", ops: ["20 s", "50 s", "200 s"], r: "50 s" },
+    { p: "Un proyectil se desplaza 200m en 4s. Calcula v.", ops: ["40 m/s", "800 m/s", "50 m/s"], r: "50 m/s" },
+    { p: "Velocidad final de un cuerpo que parte del reposo con a=2m/s² en 10s.", ops: ["20 m/s", "12 m/s", "5 m/s"], r: "20 m/s" },
+    { p: "Distancia que recorre un tren a 50m/s durante 2 minutos.", ops: ["100 m", "6000 m", "3000 m"], r: "6000 m" },
+    { p: "¿Que aceleracion tiene un cuerpo con velocidad constante?", ops: ["9.8 m/s²", "1 m/s²", "0 m/s²"], r: "0 m/s²" },
+    { p: "Un atleta corre a 5m/s. ¿Cuanto tarda en recorrer 500m?", ops: ["100 s", "50 s", "2500 s"], r: "100 s" },
+    { p: "Si d=120m y v=12m/s, ¿cuanto es t?", ops: ["10 s", "12 s", "1 s"], r: "10 s" },
+    { p: "Un cuerpo desacelera de 20m/s a 10m/s en 2s. ¿Aceleracion?", ops: ["5 m/s²", "-5 m/s²", "-10 m/s²"], r: "-5 m/s²" },
+    { p: "¿Cual es la unidad de medida de la aceleración?", ops: ["m/s", "m/s²", "km/h"], r: "m/s²" },
+    { p: "Punto de partida de un objeto en una grafica de posicion.", ops: ["Velocidad", "Origen", "Pendiente"], r: "Origen" },
+    { p: "Si un auto viaja a 60km/h, ¿cuantos m/s son aproximadamente?", ops: ["16.6 m/s", "60 m/s", "10 m/s"], r: "16.6 m/s" },
+    { p: "Un objeto cae libremente, ¿que aceleracion experimenta?", ops: ["0 m/s²", "9.8 m/s²", "Variable"], r: "9.8 m/s²" },
+    { p: "Distancia recorrida por un caracol a 0.01m/s en 100s.", ops: ["1 m", "10 m", "0.1 m"], r: "1 m" },
+    { p: "Cambio de velocidad de un cuerpo en el tiempo.", ops: ["Fuerza", "Masa", "aceleracion"], r: "aceleracion" },
+    { p: "Un camion de 80km/h frena totalmente en 4s. ¿Vf?", ops: ["20 m/s", "0 m/s", "80 m/s"], r: "0 m/s" },
+    { p: "Si d=0, ¿cual es el valor de v?", ops: ["1", "Maximo", "0"], r: "0" }
+];
+
+let userData = {respuestasCorrectas: 0, preguntasRespondidasIds: [], preguntasCorrectasIds: []};
+
+function mezclarOpciones(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function cargarSesion() {
+    const backup = localStorage.getItem("progreso_cinematica_v2");
+    if (backup) userData = JSON.parse(backup);
+    actualizarUI();
+    renderizarPreguntas();
+}
+
+function renderizarPreguntas() {
+    const contenedor = document.getElementById("quiz");
+    contenedor.innerHTML = "";
+    problemasOriginales.forEach((prob, index) => {
+        const respondida = userData.preguntasRespondidasIds.includes(index);
+        const esCorrecta = userData.preguntasCorrectasIds.includes(index);
+        const card = document.createElement("div");
+        card.className = `pregunta-card ${respondida ? (esCorrecta ? 'correcta' : 'incorrecta') : ''}`;
+        const opcionesMezcladas = respondida ? prob.ops : mezclarOpciones([...prob.ops]);
+        card.innerHTML = `
+            <p><b>${index + 1}.</b> ${prob.p}</p>
+            <div class="opciones">
+                ${opcionesMezcladas.map(opt => `
+                    <button onclick="verificar(${index}, '${opt}', this)" ${respondida ? 'disabled' : ''}
+                        class="${respondida && opt === prob.r && esCorrecta ? 'correct' : ''}">${opt}</button>
+                `).join('')}
+            </div>`;
+        contenedor.appendChild(card);
+    });
+}
+
+function verificar(idPregunta, opcionSeleccionada, btn) {
+    const correcta = problemasOriginales[idPregunta].r;
+    const esCorrecto = opcionSeleccionada === correcta;
+    btn.parentElement.querySelectorAll("button").forEach(b => b.disabled = true);
+    if (esCorrecto) {
+        btn.classList.add("correct");
+        userData.respuestasCorrectas++;
+        userData.preguntasCorrectasIds.push(idPregunta);
+        btn.closest('.pregunta-card').classList.add('correcta');
+    } else {
+        btn.classList.add("incorrect");
+        btn.closest('.pregunta-card').classList.add('incorrecta');
+    }
+    userData.preguntasRespondidasIds.push(idPregunta);
+    guardarYActualizar();
+}
+
+function guardarYActualizar() {
+    localStorage.setItem("progreso_cinematica_v2", JSON.stringify(userData));
+    const porcentaje = Math.round((userData.respuestasCorrectas / problemasOriginales.length) * 100);
+    let progresoGeneral = JSON.parse(localStorage.getItem("user_progreso")) || {cinematica:0, dinamica:0, energia:0, ondas:0, electricidad:0, termo:0, optica:0};
+    progresoGeneral.cinematica = porcentaje;
+    localStorage.setItem("user_progreso", JSON.stringify(progresoGeneral));
+    actualizarUI();
+}
+
+function actualizarUI() {
+    document.getElementById("puntos-val").innerText = userData.respuestasCorrectas;
+    const porc = Math.round((userData.respuestasCorrectas / 20) * 100);
+    document.getElementById("porcentaje-val").innerText = porc + "%";
+    document.getElementById("barra-progreso").style.width = porc + "%";
+}
+
+function reiniciarProgreso() {
+    if (confirm("¿Reiniciar cuestionario?")) {
+        localStorage.removeItem("progreso_cinematica_v2");
+        let progresoGeneral = JSON.parse(localStorage.getItem("user_progreso"));
+        if(progresoGeneral) {
+            progresoGeneral.cinematica = 0;
+            localStorage.setItem("user_progreso", JSON.stringify(progresoGeneral));
+        }
+        location.reload();
+    }
+}
+
+window.onload = cargarSesion;
+</script>
+
+</body>
+</html>

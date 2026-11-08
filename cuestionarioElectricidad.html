@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Newton-Go | Quiz Electricidad</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #0f172a;
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #020617;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .formulas-bar {
+            background: #1e293b;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #38bdf8;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .formula-item {
+            background: #0f172a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-container {
+            flex: 2;
+            max-width: 800px;
+            min-width: 300px;
+        }
+
+        .stats-panel {
+            flex: 1;
+            max-width: 320px;
+            min-width: 280px;
+            background: #020617;
+            padding: 20px;
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+            border: 1px solid #1e293b;
+        }
+
+        .glosario {
+            margin-top: 25px;
+            font-size: 0.85em;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            
+        }
+        .glosario b{
+            color: #38bdf8;
+        }
+        .glosario h4 {
+            margin: 0 0 10px 0;
+            
+            text-transform: uppercase;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 5px;
+        }
+
+        .glosario-item {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .glosario-item b {
+            color: #38bdf8;
+            font-family: monospace;
+        }
+
+        .pregunta-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #334155;
+            transition: 0.3s;
+        }
+
+        .pregunta-card.correcta {
+            border-left-color: #22c55e;
+            opacity: 0.8;
+        }
+
+        .pregunta-card.incorrecta {
+            border-left-color: #ef4444;
+            opacity: 0.8;
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #334155;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover:not(:disabled) {
+            background: #38bdf8;
+            color: black;
+        }
+
+        .correct {
+            background: #22c55e !important;
+        }
+
+        .incorrect {
+            background: #ef4444 !important;
+        }
+
+        .barra-bg {
+            background: #334155;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .barra-fill {
+            background: #38bdf8;
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>Desafío: Electricidad y Ley de Ohm</header>
+
+<div class="formulas-bar">
+    <div class="formula-item"><b>Voltaje:</b> V = I · R</div>
+    <div class="formula-item"><b>Corriente:</b> I = V / R</div>
+    <div class="formula-item"><b>Resistencia:</b> R = V / I</div>
+    <div class="formula-item"><b>Potencia:</b> P = V · I</div>
+</div>
+
+<div class="container">
+
+    <div class="quiz-container" id="quiz"></div>
+
+    <div class="stats-panel">
+        <h3>Progreso Electricidad</h3>
+
+        <p>Aciertos: <span id="puntos-val">0</span> / 20</p>
+
+        <div class="progress-box">
+            <span>Efectividad: <b id="porcentaje-val">0%</b></span>
+            <div class="barra-bg">
+                <div id="barra-progreso" class="barra-fill"></div>
+            </div>
+        </div>
+
+        <div class="glosario">
+            <h4>Formulario</h4>
+<ul>
+    <li>
+        <b>V = I · R</b><br>
+        Voltaje (V) es igual a la corriente (I) multiplicada por la resistencia (R). 
+    </li>
+
+    <li>
+        <b>I = V / R</b><br>
+        Corriente (I) es el voltaje (V) dividido entre la resistencia (R). 
+        
+    </li>
+
+    <li>
+        <b>R = V / I</b><br>
+        Resistencia (R) es el voltaje (V) dividido entre la corriente (I). 
+    </li>
+
+    <li>
+        <b>P = V · I</b><br>
+        Potencia (P) es el voltaje (V) multiplicado por la corriente (I). 
+    </li>
+</ul>
+        </div>
+
+        <hr style="border:0; border-top:1px solid #334155; margin:20px 0;">
+
+        <button onclick="reiniciarProgreso()" style="width:100%; background:#ef4444;">
+            Reiniciar Quiz
+        </button>
+    </div>
+
+</div>
+
+<script>
+const problemasOriginales = [
+    { p: "¿Cuál es la unidad de medida de la resistencia eléctrica?", ops: ["Voltio", "Amperio", "Ohmio"], r: "Ohmio" },
+    { p: "Si V = 12V y R = 4Ω, ¿cuánta corriente circula?", ops: ["3 A", "48 A", "0.33 A"], r: "3 A" },
+    { p: "Material que permite el paso libre de electrones.", ops: ["Aislante", "Conductor", "Semiconductor"], r: "Conductor" },
+    { p: "En un circuito en serie, si una bombilla se funde...", ops: ["Las demás brillan más", "Las demás se apagan", "No pasa nada"], r: "Las demás se apagan" },
+    { p: "La corriente que fluye en una sola dirección se llama...", ops: ["Alterna (AC)", "Continua (DC)", "Mixta"], r: "Continua (DC)" },
+    { p: "Si I = 2A y R = 10Ω, ¿cuál es el voltaje?", ops: ["5 V", "12 V", "20 V"], r: "20 V" },
+    { p: "¿Qué dispositivo protege un circuito de sobrecargas?", ops: ["Interruptor", "Fusible", "Resistencia"], r: "Fusible" },
+    { p: "Unidad de medida de la Intensidad de corriente.", ops: ["Watt", "Amperio", "Ohmio"], r: "Amperio" },
+    { p: "Si el voltaje aumenta y la resistencia es constante, la corriente...", ops: ["Aumenta", "Disminuye", "Se mantiene"], r: "Aumenta" },
+    { p: "¿Cuál es un ejemplo de aislante eléctrico?", ops: ["Cobre", "Plástico", "Hierro"], r: "Plástico" },
+    { p: "En un circuito en paralelo, el voltaje en cada rama es...", ops: ["Diferente", "Igual", "La mitad del total"], r: "Igual" },
+    { p: "La ley de Ohm relaciona Voltaje, Corriente y...", ops: ["Energía", "Potencia", "Resistencia"], r: "Resistencia" },
+    { p: "Si V = 100V e I = 5A, ¿cuánto vale R?", ops: ["500 Ω", "20 Ω", "0.05 Ω"], r: "20 Ω" },
+    { p: "Unidad de la potencia eléctrica.", ops: ["Joule", "Watt", "Voltio"], r: "Watt" },
+    { p: "¿Qué mide un voltímetro?", ops: ["Corriente", "Potencial eléctrico", "Resistencia"], r: "Potencial eléctrico" },
+    { p: "Carga eléctrica del electrón.", ops: ["Positiva", "Neutra", "Negativa"], r: "Negativa" },
+    { p: "Si R = 0 (cortocircuito), la intensidad tiende a ser...", ops: ["Cero", "Infinita", "Estable"], r: "Infinita" },
+    { p: "¿Cómo se conectan los electrodomésticos en una casa?", ops: ["Serie", "Paralelo", "Aleatorio"], r: "Paralelo" },
+    { p: "Unidad de medida del potencial eléctrico (tensión).", ops: ["Amperio", "Ohmio", "Voltio"], r: "Voltio" },
+    { p: "Si P = 100W y V = 20V, ¿cuánta corriente (I) circula?", ops: ["5 A", "2000 A", "0.2 A"], r: "5 A" }
+];
+
+let userData = {
+    respuestasCorrectas: 0,
+    preguntasRespondidasIds: [],
+    preguntasCorrectasIds: []
+};
+
+function mezclarOpciones(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function cargarSesion() {
+    const backup = localStorage.getItem("progreso_electricidad_v1");
+    if (backup) userData = JSON.parse(backup);
+
+    actualizarUI();
+    renderizarPreguntas();
+}
+
+function renderizarPreguntas() {
+    const cont = document.getElementById("quiz");
+    cont.innerHTML = "";
+
+    problemasOriginales.forEach((prob, i) => {
+        const resp = userData.preguntasRespondidasIds.includes(i);
+        const esC = userData.preguntasCorrectasIds.includes(i);
+
+        const card = document.createElement("div");
+        card.className = `pregunta-card ${resp ? (esC ? 'correcta' : 'incorrecta') : ''}`;
+
+        const opsM = resp ? prob.ops : mezclarOpciones([...prob.ops]);
+
+        card.innerHTML = `
+            <p><b>${i + 1}.</b> ${prob.p}</p>
+            <div class="opciones">
+                ${opsM.map(o => `
+                    <button 
+                        onclick="verificar(${i}, '${o}', this)" 
+                        ${resp ? 'disabled' : ''}
+                        class="${resp && o === prob.r && esC ? 'correct' : ''}">
+                        ${o}
+                    </button>
+                `).join('')}
+            </div>
+        `;
+
+        cont.appendChild(card);
+    });
+}
+
+function verificar(id, opt, btn) {
+    const esC = opt === problemasOriginales[id].r;
+
+    btn.parentElement.querySelectorAll("button")
+        .forEach(b => b.disabled = true);
+
+    if (esC) {
+        btn.classList.add("correct");
+        userData.respuestasCorrectas++;
+        userData.preguntasCorrectasIds.push(id);
+        btn.closest('.pregunta-card').classList.add('correcta');
+    } else {
+        btn.classList.add("incorrect");
+        btn.closest('.pregunta-card').classList.add('incorrecta');
+    }
+
+    userData.preguntasRespondidasIds.push(id);
+    guardarYActualizar();
+}
+
+function guardarYActualizar() {
+    localStorage.setItem("progreso_electricidad_v1", JSON.stringify(userData));
+
+    const porc = Math.round(
+        (userData.respuestasCorrectas / problemasOriginales.length) * 100
+    );
+
+    let progG = JSON.parse(localStorage.getItem("user_progreso")) || {
+        cinematica: 0,
+        dinamica: 0,
+        energia: 0,
+        ondas: 0,
+        electricidad: 0,
+        termo: 0,
+        optica: 0
+    };
+
+    progG.electricidad = porc;
+
+    localStorage.setItem("user_progreso", JSON.stringify(progG));
+
+    actualizarUI();
+}
+
+function actualizarUI() {
+    document.getElementById("puntos-val").innerText = userData.respuestasCorrectas;
+
+    const porc = Math.round((userData.respuestasCorrectas / 20) * 100);
+
+    document.getElementById("porcentaje-val").innerText = porc + "%";
+    document.getElementById("barra-progreso").style.width = porc + "%";
+}
+
+function reiniciarProgreso() {
+    if (confirm("¿Reiniciar quiz de electricidad?")) {
+        localStorage.removeItem("progreso_electricidad_v1");
+
+        let progG = JSON.parse(localStorage.getItem("user_progreso"));
+
+        if (progG) {
+            progG.electricidad = 0;
+            localStorage.setItem("user_progreso", JSON.stringify(progG));
+        }
+
+        location.reload();
+    }
+}
+
+window.onload = cargarSesion;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Newton-Go | Quiz Termodinámica</title>
+    <style>
+     body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #0f172a;
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #020617;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .formulas-bar {
+            background: #1e293b;
+            padding: 15px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #38bdf8; 
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .formula-item {
+            background: #0f172a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-container {
+            flex: 2;
+            max-width: 800px;
+            min-width: 300px;
+        }
+
+        .stats-panel {
+            flex: 1;
+            max-width: 320px;
+            min-width: 280px;
+            background: #020617;
+            padding: 20px;
+            border-radius: 12px;
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+            border: 1px solid #1e293b;
+        }
+
+        /* Glosario */
+        .glosario {
+            margin-top: 25px;
+            font-size: 0.85em;
+            background: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .glosario h4 {
+            margin: 0 0 10px 0;
+            color: #38bdf8; 
+            text-transform: uppercase;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 5px;
+        }
+
+        .glosario-item {
+            margin-bottom: 12px;
+            line-height: 1.4;
+            border-bottom: 1px solid #0f172a;
+            padding-bottom: 8px;
+        }
+
+        .glosario-item:last-child {
+            border-bottom: none;
+        }
+
+        .glosario-item b {
+            color: #38bdf8; 
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .glosario-item i {
+            color: #94a3b8;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .pregunta-card {
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid #334155;
+            transition: 0.3s;
+        }
+
+        .pregunta-card.correcta {
+            border-left-color: #22c55e;
+            opacity: 0.8;
+        }
+
+        .pregunta-card.incorrecta {
+            border-left-color: #38bdf8; 
+            opacity: 0.8;
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #334155;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover:not(:disabled) {
+            background: #38bdf8; 
+            color: white;
+        }
+
+        .correct {
+            background: #22c55e ;
+        }
+
+        .incorrect {
+            background: #38bdf8 ; 
+        }
+
+        .barra-bg {
+            background: #334155;
+            height: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .barra-fill {
+            background: #38bdf8; 
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }    
+    </style>
+</head>
+<body>
+
+<header>Desafío: Termodinámica y Calor</header>
+
+<div class="formulas-bar">
+    <div class="formula-item"><b>Calor:</b> Q = m · c · ΔT</div>
+    <div class="formula-item"><b>K a C:</b> °C = K - 273</div>
+    <div class="formula-item"><b>C a F:</b> °F = (°C · 1.8) + 32</div>
+    <div class="formula-item"><b>1ra Ley:</b> ΔU = Q - W</div>
+</div>
+
+<div class="container">
+    <div class="quiz-container" id="quiz"></div>
+
+    <div class="stats-panel">
+        <h3>Progreso Termo</h3>
+        <p>Aciertos: <span id="puntos-val">0</span> / 20</p>
+        <div class="progress-box">
+            <span>Efectividad: <b id="porcentaje-val">0%</b></span>
+            <div class="barra-bg"><div id="barra-progreso" class="barra-fill"></div></div>
+        </div>
+
+        <div class="glosario">
+            <h4>Guía de Variables</h4>
+            <div class="glosario-item">
+                <b>Q = m · c · ΔT</b>
+                <i>Q: Calor (J o Cal), m: masa, c: calor específico, ΔT: cambio de temperatura.</i>
+            </div>
+            <div class="glosario-item">
+                <b>K = °C + 273</b>
+                <i>Escala absoluta. El cero absoluto (0 K) es donde no hay vibración molecular.</i>
+            </div>
+            <div class="glosario-item">
+                <b>ΔU = Q - W</b>
+                <i>ΔU: Cambio energía interna, Q: calor añadido, W: trabajo realizado por el sistema.</i>
+            </div>
+            <div class="glosario-item">
+                <b>1 cal = 4.18 J</b>
+                <i>Equivalencia entre calorías (energía térmica) y Joules (trabajo mecánico).</i>
+            </div>
+        </div>
+
+        <hr style="border:0; border-top:1px solid #334155; margin:20px 0;">
+        <button onclick="reiniciarProgreso()" style="width:100%; background:#ef4444;">Reiniciar Quiz</button>
+    </div>
+</div>
+
+<script>
+const problemasOriginales = [
+    { p: "¿Qué mide realmente la temperatura?", ops: ["Cantidad de calor", "Energía cinética promedio", "Masa de un cuerpo"], r: "Energía cinética promedio" },
+    { p: "Unidad de temperatura en el Sistema Internacional.", ops: ["Celsius", "Kelvin", "Fahrenheit"], r: "Kelvin" },
+    { p: "Transferencia de calor en fluidos (líquidos/gases).", ops: ["Conducción", "Convección", "Radiación"], r: "Convección" },
+    { p: "¿A cuántos grados Kelvin equivalen 0°C?", ops: ["273 K", "0 K", "-273 K"], r: "273 K" },
+    { p: "Energía necesaria para elevar 1°C la temperatura de 1g de agua.", ops: ["Joule", "Caloría", "Watt"], r: "Caloría" },
+    { p: "Proceso donde el volumen permanece constante.", ops: ["Isotérmico", "Isocórico", "Isobárico"], r: "Isocórico" },
+    { p: "Ley que dice que el calor fluye de lo caliente a lo frío.", ops: ["Primera Ley", "Segunda Ley", "Tercera Ley"], r: "Segunda Ley" },
+    { p: "Cambio de estado de sólido a gas directamente.", ops: ["Fusión", "Sublimación", "Evaporación"], r: "Sublimación" },
+    { p: "Transferencia de calor a través del vacío.", ops: ["Conducción", "Convección", "Radiación"], r: "Radiación" },
+    { p: "Si un gas se expande sin recibir calor, su temperatura...", ops: ["Aumenta", "Baja", "No cambia"], r: "Baja" },
+    { p: "Punto donde cesa todo movimiento molecular.", ops: ["0°C", "0 K", "100°C"], r: "0 K" },
+    { p: "¿Qué es un proceso isotérmico?", ops: ["T constante", "P constante", "V constante"], r: "T constante" },
+    { p: "En la fórmula Q=m·c·ΔT, ¿qué es 'c'?", ops: ["Calor total", "Calor específico", "Conductividad"], r: "Calor específico" },
+    { p: "Material que dificulta la transferencia de calor.", ops: ["Conductor", "Aislante", "Reflector"], r: "Aislante" },
+    { p: "Energía interna total de un sistema.", ops: ["Entropía", "Entalpía", "Energía Interna (U)"], r: "Energía Interna (U)" },
+    { p: "¿Qué sucede con los metales cuando se calientan?", ops: ["Se contraen", "Se dilatan", "No cambian"], r: "Se dilatan" },
+    { p: "Un proceso a presión constante es...", ops: ["Isobárico", "Isotérmico", "Adiabático"], r: "Isobárico" },
+    { p: "El calor latente es el calor usado para...", ops: ["Subir la temperatura", "Cambiar de estado", "Aumentar la masa"], r: "Cambiar de estado" },
+    { p: "Medida del desorden de un sistema.", ops: ["Energía", "Entropía", "Temperatura"], r: "Entropía" },
+    { p: "Un termo ideal es un ejemplo de sistema...", ops: ["Abierto", "Cerrado", "Aislado"], r: "Aislado" }
+];
+
+let userData = { respuestasCorrectas: 0, preguntasRespondidasIds: [], preguntasCorrectasIds: [] };
+
+function mezclarOpciones(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function cargarSesion() {
+    const backup = localStorage.getItem("progreso_termo_v1");
+    if (backup) userData = JSON.parse(backup);
+    actualizarUI();
+    renderizarPreguntas();
+}
+
+function renderizarPreguntas() {
+    const cont = document.getElementById("quiz");
+    cont.innerHTML = "";
+    problemasOriginales.forEach((prob, i) => {
+        const resp = userData.preguntasRespondidasIds.includes(i);
+        const esC = userData.preguntasCorrectasIds.includes(i);
+        const card = document.createElement("div");
+        card.className = `pregunta-card ${resp ? (esC ? 'correcta' : 'incorrecta') : ''}`;
+        const opsM = resp ? prob.ops : mezclarOpciones([...prob.ops]);
+        card.innerHTML = `<p><b>${i+1}.</b> ${prob.p}</p>
+            <div class="opciones">${opsM.map(o => `
+                <button onclick="verificar(${i}, '${o}', this)" ${resp ? 'disabled' : ''}
+                class="${resp && o === prob.r && esC ? 'correct' : ''}">${o}</button>`).join('')}
+            </div>`;
+        cont.appendChild(card);
+    });
+}
+
+function verificar(id, opt, btn) {
+    const esC = opt === problemasOriginales[id].r;
+    btn.parentElement.querySelectorAll("button").forEach(b => b.disabled = true);
+    if (esC) {
+        btn.classList.add("correct");
+        userData.respuestasCorrectas++;
+        userData.preguntasCorrectasIds.push(id);
+        btn.closest('.pregunta-card').classList.add('correcta');
+    } else {
+        btn.classList.add("incorrect");
+        btn.closest('.pregunta-card').classList.add('incorrecta');
+    }
+    userData.preguntasRespondidasIds.push(id);
+    guardarYActualizar();
+}
+
+function guardarYActualizar() {
+    localStorage.setItem("progreso_termo_v1", JSON.stringify(userData));
+    const porc = Math.round((userData.respuestasCorrectas / problemasOriginales.length) * 100);
+    let progG = JSON.parse(localStorage.getItem("user_progreso")) || {cinematica:0, dinamica:0, energia:0, ondas:0, electricidad:0, termo:0, optica:0};
+    progG.termo = porc;
+    localStorage.setItem("user_progreso", JSON.stringify(progG));
+    actualizarUI();
+}
+
+function actualizarUI() {
+    document.getElementById("puntos-val").innerText = userData.respuestasCorrectas;
+    const porc = Math.round((userData.respuestasCorrectas / 20) * 100);
+    document.getElementById("porcentaje-val").innerText = porc + "%";
+    document.getElementById("barra-progreso").style.width = porc + "%";
+}
+
+function reiniciarProgreso() {
+    if (confirm("¿Reiniciar quiz de termodinámica?")) {
+        localStorage.removeItem("progreso_termo_v1");
+        let progG = JSON.parse(localStorage.getItem("user_progreso"));
+        if(progG) { progG.termo = 0; localStorage.setItem("user_progreso", JSON.stringify(progG)); }
+        location.reload();
+    }
+}
+window.onload = cargarSesion;
+</script>
+</body>
+</html>
